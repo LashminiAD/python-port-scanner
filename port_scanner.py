@@ -1,6 +1,19 @@
 import socket
 from concurrent.futures import ThreadPoolExecutor
 
+# Common ports and their services
+common_ports = {
+    21: "FTP",
+    22: "SSH",
+    23: "TELNET",
+    25: "SMTP",
+    53: "DNS",
+    80: "HTTP",
+    110: "POP3",
+    143: "IMAP",
+    443: "HTTPS"
+}
+
 # Get target input
 target = input("Enter target (IP or website): ")
 
@@ -26,14 +39,15 @@ def scan_port(port):
     try:
         result = s.connect_ex((target_ip, port))
         if result == 0:
-            print(f"Port {port} is OPEN")
+            service = common_ports.get(port, "Unknown")
+            print(f"Port {port} is OPEN ({service})")
             open_ports.append(port)
     finally:
         s.close()
 
 print("\nScanning in progress...\n")
 
-# Threading (reduced for stability)
+# Multithreading
 with ThreadPoolExecutor(max_workers=10) as executor:
     executor.map(scan_port, range(start_port, end_port + 1))
 
