@@ -1,40 +1,45 @@
 import socket
+from concurrent.futures import ThreadPoolExecutor
 
-# Take input from user
+# Input target
 target = input("Enter target (IP or website): ")
 
-print(f"\n Scanning target: {target}")
-print("Scanning in progress...\n")
+# Convert domain to IP
+try:
+    target_ip = socket.gethostbyname(target)
+except socket.gaierror:
+    print("Invalid hostname")
+    exit()
 
-open_ports = []  # list to store open ports
+print(f"\n Scanning target: {target} ({target_ip})")
 
-# Scan ports from 1 to 200
-for port in range(1, 201):
+# Custom port range
+start_port = int(input("Enter start port: "))
+end_port = int(input("Enter end port: "))
+
+open_ports = []
+
+def scan_port(port):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.settimeout(0.3)
+    s.settimeout(0.2)
 
     try:
-        result = s.connect_ex((target, port))
-
+        result = s.connect_ex((target_ip, port))
         if result == 0:
             print(f"Port {port} is OPEN")
             open_ports.append(port)
-
-    except socket.gaierror:
-        print("Hostname could not be resolved")
-        break
-
-    except socket.error:
-        print("Could not connect to server")
-        break
-
     finally:
         s.close()
 
-# Final result summary
-print("\nScan Completed!")
+print("\n Scanning in progress...\n")
+
+# Multithreading (30 threads)
+with ThreadPoolExecutor(max_workers=30) as executor:
+    executor.map(scan_port, range(start_port, end_port + 1))
+
+print("\n Scan Completed!")
 
 if open_ports:
-    print(f"Open ports: {open_ports}")
+    print(f" Open ports: {sorted(open_ports)}")
 else:
-    print("No open ports found in given range")
+    print(" No open ports found")
