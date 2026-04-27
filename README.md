@@ -25,7 +25,7 @@ The scanner:
 python port_scanner.py
 ```
 ## Example Output
-<img width="356" height="227" alt="image" src="https://github.com/user-attachments/assets/25dd9e2e-fab8-46ab-98cb-5a798082f26f" />
+<img width="383" height="228" alt="image" src="https://github.com/user-attachments/assets/517681e5-7207-44a7-9227-579f2fd98418" />
 
 ## Disclaimer
 
