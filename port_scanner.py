@@ -1,7 +1,7 @@
 import socket
 from concurrent.futures import ThreadPoolExecutor
 
-# Common ports and their services
+# Common ports and services
 common_ports = {
     21: "FTP",
     22: "SSH",
@@ -14,7 +14,7 @@ common_ports = {
     443: "HTTPS"
 }
 
-# Get target input
+# Get target
 target = input("Enter target (IP or website): ")
 
 # Convert domain to IP
@@ -26,7 +26,7 @@ except socket.gaierror:
 
 print(f"\nScanning target: {target} ({target_ip})")
 
-# Get port range
+# Port range
 start_port = int(input("Enter start port: "))
 end_port = int(input("Enter end port: "))
 
@@ -34,7 +34,7 @@ open_ports = []
 
 def scan_port(port):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.settimeout(0.5)
+    s.settimeout(1)   # increased for accuracy
 
     try:
         result = s.connect_ex((target_ip, port))
@@ -47,8 +47,8 @@ def scan_port(port):
 
 print("\nScanning in progress...\n")
 
-# Multithreading
-with ThreadPoolExecutor(max_workers=10) as executor:
+# Balanced threading
+with ThreadPoolExecutor(max_workers=5) as executor:
     executor.map(scan_port, range(start_port, end_port + 1))
 
 print("\nScan Completed!")
