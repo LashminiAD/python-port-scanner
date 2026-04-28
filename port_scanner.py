@@ -1,7 +1,6 @@
 import socket
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor #concurrent.futures → module for running tasks simultaneously ,   ThreadPoolExecutor  → tool to run multiple scans at the same time
 
-# Common ports and services
 common_ports = {
     21: "FTP",
     22: "SSH",
@@ -14,13 +13,11 @@ common_ports = {
     443: "HTTPS"
 }
 
-# Get target
 target = input("Enter target (IP or website): ")
 
-# Convert domain to IP
 try:
-    target_ip = socket.gethostbyname(target)
-except socket.gaierror:
+    target_ip = socket.gethostbyname(target) # Convert domain to IP
+except socket.gaierror: # error if invalid website
     print("Invalid hostname")
     exit()
 
